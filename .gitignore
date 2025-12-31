@@ -184,3 +184,4 @@ cython_debug/
 data/csv/*
 data/db/*
 !data/models/*
+data/db/test.db
