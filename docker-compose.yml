@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  credit-scoring-service:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.grpc_server
+    ports:
+      - "50051:50051"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - credit-network
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.gateway
+    command: uvicorn http_server:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    depends_on:
+      - credit-scoring-service
+    environment:
+      - GRPC_HOST=credit-scoring-service
+      - GRPC_PORT=50051
+    restart: unless-stopped
+    networks:
+      - credit-network
+
+  front:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.front
+    command: "streamlit run ./http_client.py --server.port 8501 --server.address 0.0.0.0"
+    ports:
+      - "8501:8501"
+    environment:
+      - HTTP_HOST=api-gateway
+      - HTTP_PORT=8000
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+    networks:
+      - credit-network
+
+networks:
+  credit-network:
+    driver: bridge

@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY req.txt .
+RUN pip3 install -r req.txt
+
+# Copy application files
+COPY proto/ ./proto
+COPY dto/ ./dto
+
+COPY grpc_client.py .
+COPY http_server.py .
+COPY data/ ./data/
+
+# Create necessary directories
+RUN mkdir -p data/db data/models
+
+EXPOSE 8000
+
+CMD ["uvicorn", "http_server:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

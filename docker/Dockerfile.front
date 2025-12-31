@@ -1,0 +1,11 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip3 install streamlit==1.48.1 requests==2.32.5
+
+COPY http_client.py .
+
+EXPOSE 8000
+
+CMD ["streamlit", "run", "./http_client.py", "--server.port", "80"]

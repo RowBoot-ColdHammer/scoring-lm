@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package credit_scoring;
+
+service CreditScoringService {
+  rpc Score (CreditRequest) returns (CreditResponse);
+}
+
+message CreditRequest {
+  int32 age = 1;
+  double income = 2;
+  bool education = 3;
+  bool work = 4;
+  bool car = 5;
+}
+
+message CreditResponse {
+  bool approved = 1;
+  double score = 2;
+  string message = 3;
+}

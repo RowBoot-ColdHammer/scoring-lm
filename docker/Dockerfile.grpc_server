@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY req.txt .
+RUN pip3 install -r req.txt
+
+# Copy application files
+COPY proto/ ./proto
+
+COPY grpc_server.py .
+COPY data/ ./data/
+
+# Create necessary directories
+RUN mkdir -p data/db data/models
+
+EXPOSE 50051
+
+CMD ["python", "grpc_server.py"]
