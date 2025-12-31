@@ -1,2 +1,2 @@
-# croting-lm
-
+# scoring-lm
+Lil project with gRPC + LM 
